@@ -1,11 +1,11 @@
 import SearchBar from './Components/SearchBar';
 import React, { Component } from 'react';
-import axios from 'axios';
 import ImageGallery from './Components/ImageGallery';
 import Modal from './Modal';
 import Container from './Components/Container';
 import Button from './Components/Button';
 import MyLoader from './Components/Loader/Loader';
+import Api from './Services/Api';
 
 export default class App extends Component {
   state = {
@@ -45,13 +45,10 @@ export default class App extends Component {
 
     this.setState({ isLoading: true });
 
-    axios
-      .get(
-        `https://pixabay.com/api/?q=${searchQuery}&key=21816911-1420e6eb818d750af174e21f8&image_type=photo&orientation=horizontal&page=${currentPage}&per_page=12`,
-      )
-      .then(response => {
+    return Api.findImage(currentPage, searchQuery)
+      .then(hits => {
         this.setState(prevState => ({
-          hits: [...prevState.hits, ...response.data.hits],
+          hits: [...prevState.hits, ...hits],
           currentPage: prevState.currentPage + 1,
         }));
       })
